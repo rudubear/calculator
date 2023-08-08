@@ -35,15 +35,7 @@ body {
     margin: auto auto;
 }
 
-.calcClear,
-.calcModifyNumber,
-.calcNumber,
-.calcOperate,
-.calcEqual {
-    flex-basis: 25%;
-    font-size: 32px;
-    
-}
+
 
 .calculatorButtonSpace.calculatorButtonSpaceDouble {
     width: 300px;
