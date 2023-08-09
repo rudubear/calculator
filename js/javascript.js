@@ -24,21 +24,48 @@ const calculatorEntries = {
 let currentCalculatorState = calculatorStates[`num1`];
 console.log("current calc state " + currentCalculatorState);
 
-
+let num1String = null;
+let num2String = null
 let num1 = DEFAULT_NUM;
 let num2 = DEFAULT_NUM;
+let operator = null;
 
 for (calculatorButton of calculatorButtons){
     calculatorButton.addEventListener("click",doSomething)
 }
 
-
+function processNumber(digit){
+    console.log(`processing ${digit}`);
+    switch (currentCalculatorState) {
+        case 'enterNum1': {
+            if (num1String === null) {
+                num1String = digit;
+                updateCalcDisplayScreen(num1String);
+            }
+            else {
+                num1String += digit;
+                updateCalcDisplayScreen(num1String);
+            }
+            break;
+        }
+        default:
+            break;
+    }
+    console.log(`num1String is ${num1String}`);
+    
+}
 
 function doSomething(e){
     const buttonPressed = e.srcElement;
     const calcEntry = getCalculatorEntry(buttonPressed);
     console.log(calcEntry);
     getCurrentDisplayValue();
+    
+    switch(calcEntry) {
+        case calculatorEntries[`num`]: {
+            processNumber(e.srcElement[`value`]);
+        }
+    }
 }
 
 function getCurrentDisplayValue(){
@@ -81,3 +108,37 @@ function getCalculatorEntry (buttonPressed) {
         return calculatorEntries[`equal`];
     }
 }
+
+function calculate(num1, num2, operate) {
+    switch(operate){
+        case '+' : {
+            return add(num1, num2);
+            break;
+        }
+        default:
+        return 0;
+    }
+    console.log(hue);
+}
+
+function add(num1, num2) {
+    return num1 + num2;
+}
+
+function subtract(num1, num2) {
+    return num1 - num2;
+}
+
+function multiply(num1, num2) {
+    return num1 * num2;
+}
+
+function divide (num1, num2) {
+    return num1 / num2;
+}
+
+function updateCalcDisplayScreen(value){
+    const calculatorDisplayScreen = document.getElementById("calcDisplayScreen");
+    calculatorDisplayScreen.textContent = value;
+}
+
