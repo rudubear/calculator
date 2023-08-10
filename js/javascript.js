@@ -29,6 +29,7 @@ let num1 = DEFAULT_NUM;
 let num2 = DEFAULT_NUM;
 let operator = null;
 let lockedOperator = null;
+let displayValue = 0;
 
 for (calculatorButton of calculatorButtons){
     calculatorButton.addEventListener("click",doSomething)
@@ -79,15 +80,25 @@ function doSomething(e){
                 num1 = Number(num1String);
                 console.log(`num1 set to ${num1}, num2 is ${num2}`);
                 currentCalculatorState = `enterNum2`;
+                lockedOperator = operator;
             }
-            if(currentCalculatorState === `enterNum2`) {
+            else if(currentCalculatorState === `enterNum2`) {
                 num2 = Number(num2String);
                 console.log(`num1 set to ${num1}, num2 is ${num2}`);
                 lockedOperator = operator;
-                operate(num1, num2, lockedOperator);
+                displayValue = operate(num1, num2, lockedOperator);
+                updateCalcDisplayScreen(displayValue);
             }
             //currentCalculatorState = calculatorStates[`num2`];
             break;
+        }
+        case calculatorEntries[`equal`]: {
+            if(currentCalculatorState === `enterNum2`){
+                num2 = Number(num2String);
+                displayValue = operate(num1, num2, lockedOperator);
+                console.log(displayValue);
+                updateCalcDisplayScreen(displayValue);
+            }
         }
     }
 }
@@ -109,7 +120,7 @@ function processNumber(digit){
         }
         case 'enterNum2': {
             console.log(`num2 string was initially ${num2String}`);
-            if ((num2String === 0) || (num2String === "0")) {
+            if ((num2String === null) || (num2String === 0) || (num2String === "0")) {
                 console.log("hue")
                 num2String = digit;
                 updateCalcDisplayScreen(num2String);
@@ -193,18 +204,6 @@ function getCalculatorEntry (buttonPressed) {
     }
 }
 
-function calculate(num1, num2, operate) {
-    switch(operate){
-        case '+' : {
-            return add(num1, num2);
-            break;
-        }
-        default:
-        return 0;
-    }
-    console.log(hue);
-}
-
 function add(num1, num2) {
     return num1 + num2;
 }
@@ -222,7 +221,7 @@ function divide (num1, num2) {
 }
 
 function operate (num1, num2, operation) {
-    console.log(operation);
+    console.log(`performing ${operation} on ${num1} and ${num2}`);
     let result = null;
     switch(operation){
         case "plus":
@@ -241,6 +240,7 @@ function operate (num1, num2, operation) {
             console.log("how did we get here");
             throw(error);
     }
+    return result;
 }
 
 function negate(numString) {
