@@ -1,7 +1,7 @@
 const calculatorButtons = document.getElementsByClassName("calcButton");
 const myNumbers = [0,1,2,3,4,5,6,7,8,9];
 const modifyNumbers = ["%",".","+/-"];
-const DEFAULT_NUM = 0;
+const DEFAULT_NUM = null;
 const DEFAULT_MAX_NUM = 99999999;
 
 //we will start at entering num1, then cycle between operand and num2 until we hit a pls clear state
@@ -37,7 +37,7 @@ function doSomething(e){
     const buttonPressed = e.srcElement;
     const calcEntry = getCalculatorEntry(buttonPressed);
     console.log(calcEntry);
-    console.log(calculatorEntries);
+    //console.log(calculatorEntries);
     getCurrentDisplayValue();
 
     switch(calcEntry) {
@@ -50,8 +50,6 @@ function doSomething(e){
             updateCalcDisplayScreen(num1String);
             currentCalculatorState = `enterNum1`;
             console.log(`clear! current state set to ${currentCalculatorState} `);
-            
-            console.log("")
             break;
         }
         case calculatorEntries[`num`]: {
@@ -117,7 +115,9 @@ function processNumberModify(requestedModification, numString){
                     numString = trimZerosAtEnd(Number(percentify(numString)).valueOf().toPrecision(8));
                     break;
                 case "decimal":
-                    numString = addDecimal(numString);
+                    if (alreadyHasDecimal(numString) === false){
+                        numString = addDecimal(numString);
+                    }
                     break;
                 default:
                     throw(console.error());
@@ -231,6 +231,11 @@ function negate(numString) {
     }
 }
 
+function alreadyHasDecimal(numString){
+    console.log("num1String already has a decimal");
+    return (String(numString)).includes(".");
+}
+
 function addDecimal(numString) {
     switch(numString) {
         case "0":
@@ -239,11 +244,7 @@ function addDecimal(numString) {
             console.log("how did we get here?")
             return "Nan"; 
             // ideally we should not enter this state as NaN should set the calculator into a plsClear state
-        default:
-            if(String(numString).includes(".")) {
-                console.log("num1String already has a decimal");
-            }
-            else {
+        default:{
                 return numString + ".";
             }
     }
@@ -258,10 +259,10 @@ function percentify(numString) {
             return "Nan"; 
             // ideally we should not enter this state as NaN should set the calculator into a plsClear state
         default:
-            console.log(numString);
-            console.log(Number(numString).valueOf());
-            console.log((Number(numString).valueOf())/100);
-            console.log(((Number(numString).valueOf())/100).toString());
+            //console.log(numString);
+            //console.log(Number(numString).valueOf());
+            //console.log((Number(numString).valueOf())/100);
+            //console.log(((Number(numString).valueOf())/100).toString());
             return ((Number(numString).valueOf())/100).toString();
     }
 }
@@ -278,11 +279,11 @@ function trimZerosAtEnd(myStrNumber){
     if(locationOfExponent >=0 ) {
         trimmedExponent = myStrNumber.slice(locationOfExponent, myStrNumber.length);
         myStrNumber = myStrNumber.slice(0,locationOfExponent-1);
-        console.log(trimmedExponent);
+        //console.log(trimmedExponent);
     }
     while (myStrNumber[myStrNumber.length-1] === "0"){
-        console.log(myStrNumber[myStrNumber.length-1]);
-        console.log(myStrNumber);
+        //console.log(myStrNumber[myStrNumber.length-1]);
+        //console.log(myStrNumber);
         myStrNumber = myStrNumber.slice(0,myStrNumber.length-1);
     }
     return myStrNumber + trimmedExponent;
