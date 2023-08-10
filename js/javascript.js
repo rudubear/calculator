@@ -1,3 +1,19 @@
+/*
+enternum1 state valid inputs are a digit, modify or an operand
+    if digit entered, overwrite number on screen
+    if operand entered without digit take the number on screen as num1
+    if operand selected
+        capture num1 as the number on screen and enter state enternum2
+
+enternum2 state valid inptus are a digit, modify or an operand
+    if digit entered, overwrite number on screen
+    if operand entered without a digit, take the number on screen as num2
+        calculate the operation of num1 operand num2, return result on screen
+
+
+
+*/
+
 const calculatorButtons = document.getElementsByClassName("calcButton");
 const myNumbers = [0,1,2,3,4,5,6,7,8,9];
 const modifyNumbers = ["%",".","+/-"];
@@ -38,20 +54,25 @@ for (calculatorButton of calculatorButtons){
 function doSomething(e){
     const buttonPressed = e.srcElement;
     const calcEntry = getCalculatorEntry(buttonPressed);
+
+    /*
+    if(currentCalculatorState === `enterNum1`){
+        switch(calcEntry) {
+            case calculatorEntries[`clear`]: {   
+            resetCalculator();
+            break;
+            }
+        }
+    }
+
+    */
     console.log(calcEntry);
     //console.log(calculatorEntries);
     getCurrentDisplayValue();
 
     switch(calcEntry) {
         case calculatorEntries[`clear`]: {
-            num1String = 0;
-            num2String = null;
-            num1 = DEFAULT_NUM;
-            num2 = DEFAULT_NUM;
-            operator = null;
-            updateCalcDisplayScreen(num1String);
-            currentCalculatorState = `enterNum1`;
-            console.log(`clear! current state set to ${currentCalculatorState} `);
+            resetCalculator();
             break;
         }
         case calculatorEntries[`num`]: {
@@ -88,6 +109,7 @@ function doSomething(e){
                 lockedOperator = operator;
                 displayValue = operate(num1, num2, lockedOperator);
                 updateCalcDisplayScreen(displayValue);
+               
             }
             //currentCalculatorState = calculatorStates[`num2`];
             break;
@@ -98,6 +120,10 @@ function doSomething(e){
                 displayValue = operate(num1, num2, lockedOperator);
                 console.log(displayValue);
                 updateCalcDisplayScreen(displayValue);
+                num1 = displayValue;
+                num1String = displayValue.toString();
+                num2 = DEFAULT_NUM;
+                num2String = 0;
             }
         }
     }
@@ -317,5 +343,17 @@ function trimZerosAtEnd(myStrNumber){
         myStrNumber = myStrNumber.slice(0,myStrNumber.length-1);
     }
     return myStrNumber + trimmedExponent;
+}
+
+function resetCalculator(){
+    num1String = 0;
+    num2String = null;
+    num1 = DEFAULT_NUM;
+    num2 = DEFAULT_NUM;
+    operator = null;
+    lockedOperator = null;
+    updateCalcDisplayScreen(num1String);
+    currentCalculatorState = `enterNum1`;
+    console.log(`clear! current state set to ${currentCalculatorState} `);
 }
 
