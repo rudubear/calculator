@@ -29,6 +29,14 @@ body {
 
 #calcDisplayScreen {
     font-size: 64px;
+    text-align: right;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    margin: 0px;
+    color: yellow;
+    background-color: black;
+    text-shadow: 3px 3px 4px rgb(255, 136, 0);
+    padding-left: 12px;
+    padding-right: 12px;
 }
 
 .calculatorButtonSpace {

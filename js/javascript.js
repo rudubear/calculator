@@ -1,7 +1,6 @@
 const calculatorButtons = document.getElementsByClassName("calcButton");
 const myNumbers = [0,1,2,3,4,5,6,7,8,9];
 const modifyNumbers = ["%",".","+/-"];
-const operate = ["+","/","*","-"];
 const DEFAULT_NUM = 0;
 const DEFAULT_MAX_NUM = 99999999;
 
@@ -9,7 +8,7 @@ const DEFAULT_MAX_NUM = 99999999;
 const calculatorStates = {
     num1: 'enterNum1', 
     operand: 'enterAnOperand',
-    num2: 'enternum2',
+    num2: 'enterNum2',
     plsClear: 'nanLockedPleaseClear', //must clear to make use of calculator
 }
 
@@ -37,16 +36,50 @@ for (calculatorButton of calculatorButtons){
 function doSomething(e){
     const buttonPressed = e.srcElement;
     const calcEntry = getCalculatorEntry(buttonPressed);
-    //console.log(calcEntry);
+    console.log(calcEntry);
+    console.log(calculatorEntries);
     getCurrentDisplayValue();
 
     switch(calcEntry) {
+        case calculatorEntries[`clear`]: {
+            num1String = 0;
+            num2String = 0;
+            num1 = DEFAULT_NUM;
+            num2 = DEFAULT_NUM;
+            operator = null;
+            updateCalcDisplayScreen(num1String);
+            currentCalculatorState = `enterNum1`;
+            console.log(`clear! current state set to ${currentCalculatorState} `);
+            
+            console.log("")
+            break;
+        }
         case calculatorEntries[`num`]: {
+            console.log("process a number");
             processNumber(e.srcElement[`value`]);
             break;
         }
         case calculatorEntries[`numModify`]: {
-            processNumberModify(e.srcElement[`value`]);
+            console.log("modify a number");
+            if (currentCalculatorState === `enterNum1`) {
+                num1String = processNumberModify(e.srcElement[`value`], num1String);
+                updateCalcDisplayScreen(num1String);
+            }
+            else if (currentCalculatorState === `enterNum2`) {
+                num2String = processNumberModify(e.srcElement[`value`], num2String);
+                updateCalcDisplayScreen(num2String);
+            }
+            break;
+        }
+        case calculatorEntries[`operate`]: {
+            const operation = e.srcElement[`value`];
+            console.log(operation);
+            if(currentCalculatorState === `enterNum1`) {
+                num1 = Number(num1String);
+                console.log(`num1 set to ${num1}, num2 is ${num2}`);
+                currentCalculatorState = `enterNum2`;
+            }
+            //currentCalculatorState = calculatorStates[`num2`];
             break;
         }
     }
@@ -73,52 +106,26 @@ function processNumber(digit){
     
 }
 
-function processNumberModify(requestedModification){
+function processNumberModify(requestedModification, numString){
     console.log(`processing ${requestedModification} when current state is ${currentCalculatorState}`);
-    switch(currentCalculatorState) {
-        case `enterNum1`: {
+    
             switch(requestedModification) {
                 case "negate":
-                    switch(num1String) {
-                        case "0":
-                            break; // do nothing if +/- requested on a zero
-                        case "NaN":
-                            console.log("how did we get here?")
-                            break; // ideally we should not enter this state as NaN should set the calculator into a plsClear state
-                        default:
-                            if (String(num1String)[0] === '-') {
-                                num1String = (String(num1String)).slice(1,(String(num1String)).length);
-                            }
-                            else {
-                                num1String = '-' + num1String;
-                            }
-                    }
+                    numString = negate(numString);
                     break;
                 case "percent":
+                    numString = trimZerosAtEnd(Number(percentify(numString)).valueOf().toPrecision(8));
                     break;
                 case "decimal":
-                    switch(num1String) {
-                        case "0":
-                            break; // do nothing if +/- requested on a zero
-                        case "NaN":
-                            console.log("how did we get here?")
-                            break; // ideally we should not enter this state as NaN should set the calculator into a plsClear state
-                        default:
-                            num1String = num1String + ".";
-                    }
+                    numString = addDecimal(numString);
                     break;
                 default:
                     throw(console.error());
             }
-            console.log(`num1String updated to ${num1String}`);
-            updateCalcDisplayScreen(num1String);
-            break;
-        }
-        case `enterNum2`: {
-            break;
-        }
-    }
+            return numString;            
 }
+
+
 
 
 
@@ -191,8 +198,93 @@ function divide (num1, num2) {
     return num1 / num2;
 }
 
+function operate (num1, num2, operation) {
+    switch(operation){
+        case "add":
+            break;
+        case "subtract":
+            break;
+        case "multiply":
+            break;
+        case "divide":
+            break;
+        default:
+            throw(error);
+    }
+}
+
+function negate(numString) {
+    switch(numString) {
+        case "0":
+            return "0"; // do nothing if +/- requested on a zero
+        case "NaN":
+            console.log("how did we get here?")
+            return "NaN";
+            // ideally we should not enter this state as NaN should set the calculator into a plsClear state
+        default:
+            if (String(numString)[0] === '-') {
+                return (String(numString)).slice(1,(String(numString)).length);
+            }
+            else {
+                return '-' + numString;
+            }
+    }
+}
+
+function addDecimal(numString) {
+    switch(numString) {
+        case "0":
+            return "0"; // do nothing if +/- requested on a zero
+        case "NaN":
+            console.log("how did we get here?")
+            return "Nan"; 
+            // ideally we should not enter this state as NaN should set the calculator into a plsClear state
+        default:
+            if(String(numString).includes(".")) {
+                console.log("num1String already has a decimal");
+            }
+            else {
+                return numString + ".";
+            }
+    }
+}
+
+function percentify(numString) {
+    switch(numString) {
+        case "0":
+            return "0"; // do nothing if +/- requested on a zero
+        case "NaN":
+            console.log("how did we get here?")
+            return "Nan"; 
+            // ideally we should not enter this state as NaN should set the calculator into a plsClear state
+        default:
+            console.log(numString);
+            console.log(Number(numString).valueOf());
+            console.log((Number(numString).valueOf())/100);
+            console.log(((Number(numString).valueOf())/100).toString());
+            return ((Number(numString).valueOf())/100).toString();
+    }
+}
+
 function updateCalcDisplayScreen(value){
     const calculatorDisplayScreen = document.getElementById("calcDisplayScreen");
     calculatorDisplayScreen.textContent = value;
+}
+
+function trimZerosAtEnd(myStrNumber){
+    //trim the exponent
+    let trimmedExponent = "";
+    let locationOfExponent = myStrNumber.indexOf("e");
+    if(locationOfExponent >=0 ) {
+        trimmedExponent = myStrNumber.slice(locationOfExponent, myStrNumber.length);
+        myStrNumber = myStrNumber.slice(0,locationOfExponent-1);
+        console.log(trimmedExponent);
+    }
+    while (myStrNumber[myStrNumber.length-1] === "0"){
+        console.log(myStrNumber[myStrNumber.length-1]);
+        console.log(myStrNumber);
+        myStrNumber = myStrNumber.slice(0,myStrNumber.length-1);
+    }
+    return myStrNumber + trimmedExponent;
 }
 
