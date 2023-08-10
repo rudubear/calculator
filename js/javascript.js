@@ -28,6 +28,7 @@ let num2String = 0;
 let num1 = DEFAULT_NUM;
 let num2 = DEFAULT_NUM;
 let operator = null;
+let lockedOperator = null;
 
 for (calculatorButton of calculatorButtons){
     calculatorButton.addEventListener("click",doSomething)
@@ -43,7 +44,7 @@ function doSomething(e){
     switch(calcEntry) {
         case calculatorEntries[`clear`]: {
             num1String = 0;
-            num2String = 0;
+            num2String = null;
             num1 = DEFAULT_NUM;
             num2 = DEFAULT_NUM;
             operator = null;
@@ -64,18 +65,26 @@ function doSomething(e){
                 updateCalcDisplayScreen(num1String);
             }
             else if (currentCalculatorState === `enterNum2`) {
+                //follow up
                 num2String = processNumberModify(e.srcElement[`value`], num2String);
                 updateCalcDisplayScreen(num2String);
             }
             break;
         }
         case calculatorEntries[`operate`]: {
-            const operation = e.srcElement[`value`];
-            console.log(operation);
+            operator = e.srcElement[`value`];
+            console.log(`${operator} +  selected`);
+
             if(currentCalculatorState === `enterNum1`) {
                 num1 = Number(num1String);
                 console.log(`num1 set to ${num1}, num2 is ${num2}`);
                 currentCalculatorState = `enterNum2`;
+            }
+            if(currentCalculatorState === `enterNum2`) {
+                num2 = Number(num2String);
+                console.log(`num1 set to ${num1}, num2 is ${num2}`);
+                lockedOperator = operator;
+                operate(num1, num2, lockedOperator);
             }
             //currentCalculatorState = calculatorStates[`num2`];
             break;
@@ -87,6 +96,7 @@ function processNumber(digit){
     console.log(`processing ${digit} when current state is ${currentCalculatorState}`);
     switch (currentCalculatorState) {
         case 'enterNum1': {
+            console.log(`num1 string was initially ${num1String}`);
             if (num1String === 0) {
                 num1String = digit;
                 updateCalcDisplayScreen(num1String);
@@ -97,10 +107,23 @@ function processNumber(digit){
             }
             break;
         }
+        case 'enterNum2': {
+            console.log(`num2 string was initially ${num2String}`);
+            if ((num2String === 0) || (num2String === "0")) {
+                console.log("hue")
+                num2String = digit;
+                updateCalcDisplayScreen(num2String);
+            }
+            else {
+                console.log("wha");
+                num2String += digit;
+                updateCalcDisplayScreen(num2String);
+            }
+        }
         default:
             break;
     }
-    console.log(`num1String is ${num1String}`);
+    console.log(`num1String is ${num1String} num2String is ${num2String}`);
     
 }
 
@@ -199,16 +222,23 @@ function divide (num1, num2) {
 }
 
 function operate (num1, num2, operation) {
+    console.log(operation);
+    let result = null;
     switch(operation){
-        case "add":
+        case "plus":
+            result = add(num1,num2);
             break;
         case "subtract":
+            result = subtract(num1, num2);
             break;
         case "multiply":
+            result = multiply(num1, num2);
             break;
         case "divide":
+            result = divide(num1, num2);
             break;
         default:
+            console.log("how did we get here");
             throw(error);
     }
 }
