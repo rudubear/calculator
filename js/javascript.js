@@ -123,7 +123,7 @@ function doSomething(e){
                 //so lets crunch the numbers and set num1 to this new value
                 if (requestedOperation) {
                     num2 = Number(getCalcDisplayScreen());
-                    let newNumberOnDisplay = operate(num1, num2, requestedOperation);
+                    let newNumberOnDisplay = trimZerosAtEnd(operate(num1, num2, requestedOperation).toPrecision(8).valueOf());
                     updateCalcDisplayScreen(newNumberOnDisplay);
                     num1 = Number(newNumberOnDisplay);
                     num2 = DEFAULT_NUM;
@@ -142,7 +142,7 @@ function doSomething(e){
             case calculatorEntries[`equal`]: {
                 if(requestedOperation){
                     num2 = Number(getCalcDisplayScreen());
-                let newNumberOnDisplay = operate(num1, num2, requestedOperation);
+                let newNumberOnDisplay = trimZerosAtEnd(operate(num1, num2, requestedOperation).toPrecision(8).valueOf());
                 updateCalcDisplayScreen(newNumberOnDisplay);
                 num1 = newNumberOnDisplay;
                 num2 = DEFAULT_NUM;
@@ -420,6 +420,9 @@ function trimZerosAtEnd(myStrNumber){
         //console.log(myStrNumber);
         myStrNumber = myStrNumber.slice(0,myStrNumber.length-1);
     }
+    if(myStrNumber[myStrNumber.length-1] === ".") {
+        myStrNumber = myStrNumber.slice(0,myStrNumber.length-1);
+    }
     return myStrNumber + trimmedExponent;
 }
 
@@ -433,6 +436,7 @@ function resetCalculator(){
     requestedOperation = null;
     updateCalcDisplayScreen(num1String);
     currentCalculatorState = `enterNum1`;
+    num2InputStart = false;
     console.log(`clear! current state set to ${currentCalculatorState} `);
 }
 
