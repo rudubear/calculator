@@ -70,7 +70,7 @@ function doSomething(e){
             }
             case calculatorEntries[`operate`]: {
                 requestedOperation = e.srcElement[`value`]; //saveRequestedOperationState
-                console.log(`${requestedOperation} +  selected`);
+                console.log(`${requestedOperation}  selected`);
                 num1 = Number(getCalcDisplayScreen());
                 currentCalculatorState = `enterNum2`;
                 num2InputStart = true;
