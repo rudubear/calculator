@@ -1,4 +1,5 @@
 /*
+SUMMARY
 enternum1 state valid inputs are a digit, modify or an operand
     if digit entered, overwrite number on screen
     if operand entered, take the number on screen as num1
@@ -10,18 +11,15 @@ enternum2 state valid inptus are a digit, modify or an operand
     if operand entered, take the number on screen as num2
         calculate the operation of num1 operand num2, return result on screen
 
-
-
+nanLockedPleaseClear state valid input is clear
 */
 
 const calculatorButtons = document.getElementsByClassName("calcButton");
 const DEFAULT_NUM = null;
-const DEFAULT_MAX_NUM = 99999999;
 
 //we will start at entering num1, then cycle between operand and num2 until we hit a pls clear state
 const calculatorStates = {
     num1: 'enterNum1', 
-    operand: 'enterAnOperand',
     num2: 'enterNum2',
     plsClear: 'nanLockedPleaseClear', //must clear to make use of calculator
 }
@@ -37,12 +35,8 @@ const calculatorEntries = {
 let currentCalculatorState = calculatorStates[`num1`];
 console.log("current calc state " + currentCalculatorState);
 
-let num1String = 0;
-let num2String = 0;
 let num1 = DEFAULT_NUM;
 let num2 = DEFAULT_NUM;
-let operator = null;
-let lockedOperator = null;
 let displayValue = 0;
 let requestedOperation = null;
 let num2InputStart = false;
@@ -54,7 +48,6 @@ for (calculatorButton of calculatorButtons){
 function doSomething(e){
     const buttonPressed = getCalculatorEntry(e.srcElement);
 
-    
     if(currentCalculatorState === `enterNum1`){
         switch(buttonPressed) {
             case calculatorEntries[`clear`]: {   
@@ -87,13 +80,6 @@ function doSomething(e){
                 console.log("equals does nothing when current state is enterNum1");
             }
         }
-/*
-        else if(currentCalculatorState === `enterNum2`) {
-            num2 = Number(num2String);
-            console.log(`num1 set to ${num1}, num2 is ${num2}`);
-            lockedOperator = operator;
-            displayValue = operate(num1, num2, lockedOperator);
-            updateCalcDisplayScreen(displayValue);*/
     } else if (currentCalculatorState === `enterNum2`) {
         switch(buttonPressed) {
             case calculatorEntries[`clear`]: {   
@@ -149,7 +135,7 @@ function doSomething(e){
                 num2InputStart = true;
                 }
 
-                requestedOperation = null; //no operator in the queue
+                requestedOperation = null; //no operator in the queue now
             }
         }
     }
@@ -163,10 +149,7 @@ function doSomething(e){
         }
         
     }
-
-    
     console.log(buttonPressed);
-    
 }
 
 function processNumber(digit){
@@ -183,37 +166,6 @@ function processNumber(digit){
         let newNumberOnDisplay = numberOnDisplay + digit;
         updateCalcDisplayScreen(newNumberOnDisplay);
     }
-    /*switch (currentCalculatorState) {
-        case 'enterNum1': {
-            console.log(`num1 string was initially ${num1String}`);
-            if (num1String === 0) {
-                num1String = digit;
-                updateCalcDisplayScreen(num1String);
-            }
-            else {
-                num1String += digit;
-                updateCalcDisplayScreen(num1String);
-            }
-            break;
-        }
-        case 'enterNum2': {
-            console.log(`num2 string was initially ${num2String}`);
-            if ((num2String === null) || (num2String === 0) || (num2String === "0")) {
-                console.log("hue")
-                num2String = digit;
-                updateCalcDisplayScreen(num2String);
-            }
-            else {
-                console.log("wha");
-                num2String += digit;
-                updateCalcDisplayScreen(num2String);
-            }
-        }
-        default:
-            break;
-    }*/
-    console.log(`num1String is ${num1String} num2String is ${num2String}`);
-    
 }
 
 function processNumberModify(requestedModification, numberOnDisplay){
@@ -235,7 +187,6 @@ function processNumberModify(requestedModification, numberOnDisplay){
                     }
                     else if (checkIfNumberHasDecimal(numberOnDisplay) === false){
                         result = addDecimal(numberOnDisplay);
-                        //updateCalcDisplayScreen(result);
                     } else {
                         result = numberOnDisplay;
                     }
@@ -247,13 +198,9 @@ function processNumberModify(requestedModification, numberOnDisplay){
 }
 
 
-
-
-
 function getCurrentDisplayValue(){
     const currentDisplay = document.getElementById("calcDisplayScreen");
     const currentDisplayValue = currentDisplay.textContent;
-    //console.log(currentDisplayValue);
 
     if (isNaN(currentDisplayValue)) {
         console.log("is not a number");
@@ -264,29 +211,23 @@ function getCurrentDisplayValue(){
 function getCalculatorEntry (buttonPressed) {
     const buttonClasses = Array.from(buttonPressed.classList); 
 
-    //console.log(buttonClasses);
     if (buttonClasses.includes("calcNumber")) {
-        //console.log("a number has been selected");
         return calculatorEntries[`num`];
     }
 
     if (buttonClasses.includes("calcOperate")) {
-        //console.log("an operation has been selected");
         return calculatorEntries[`operate`];
     }
 
     if (buttonClasses.includes("calcModifyNumber")) {
-        //console.log("a number modification has been requested");
         return calculatorEntries[`numModify`];
     }
 
     if (buttonClasses.includes("calcClear")) {
-        //console.log("display cleared");
         return calculatorEntries[`clear`];
     }
 
     if (buttonClasses.includes("calcEqual")) {
-        //console.log("crunching numbers");
         return calculatorEntries[`equal`];
     }
 }
@@ -382,10 +323,6 @@ function percentify(numString) {
             return "Nan"; 
             // ideally we should not enter this state as NaN should set the calculator into a plsClear state
         default:
-            //console.log(numString);
-            //console.log(Number(numString).valueOf());
-            //console.log((Number(numString).valueOf())/100);
-            //console.log(((Number(numString).valueOf())/100).toString());
             return ((Number(numString).valueOf())/100).toString();
     }
 }
@@ -413,11 +350,8 @@ function trimZerosAtEnd(myStrNumber){
     if(locationOfExponent >=0 ) {
         trimmedExponent = myStrNumber.slice(locationOfExponent, myStrNumber.length);
         myStrNumber = myStrNumber.slice(0,locationOfExponent-1);
-        //console.log(trimmedExponent);
     }
     while (myStrNumber[myStrNumber.length-1] === "0"){
-        //console.log(myStrNumber[myStrNumber.length-1]);
-        //console.log(myStrNumber);
         myStrNumber = myStrNumber.slice(0,myStrNumber.length-1);
     }
     if(myStrNumber[myStrNumber.length-1] === ".") {
@@ -427,14 +361,10 @@ function trimZerosAtEnd(myStrNumber){
 }
 
 function resetCalculator(){
-    num1String = 0;
-    num2String = null;
     num1 = DEFAULT_NUM;
     num2 = DEFAULT_NUM;
-    operator = null;
-    lockedOperator = null;
     requestedOperation = null;
-    updateCalcDisplayScreen(num1String);
+    updateCalcDisplayScreen(0);
     currentCalculatorState = `enterNum1`;
     num2InputStart = false;
     console.log(`clear! current state set to ${currentCalculatorState} `);
