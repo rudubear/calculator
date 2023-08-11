@@ -57,7 +57,11 @@ function doSomething(e){
             }
             case calculatorEntries[`num`]: {
                 console.log("a number has been entered onto the screen");
-                processNumber(e.srcElement[`value`]);
+                if (document.getElementById("calcDisplayScreen").textContent.length < 12){
+                    processNumber(e.srcElement[`value`]);
+                } else {
+                    console.log("please stop, the display is full");
+                }
                 break;
             }
             case calculatorEntries[`numModify`]: {
@@ -93,7 +97,12 @@ function doSomething(e){
                     num2InputStart = false;
                     updateCalcDisplayScreen("");
                 }
-                processNumber(e.srcElement[`value`]);
+                if (document.getElementById("calcDisplayScreen").textContent.length < 12){
+                    processNumber(e.srcElement[`value`]);
+                } else {
+                    console.log("please stop, the display is full");
+                }
+
                 break;
             }
             case calculatorEntries[`numModify`]: {
