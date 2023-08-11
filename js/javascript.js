@@ -227,7 +227,13 @@ function processNumberModify(requestedModification, numberOnDisplay){
                     result = trimZerosAtEnd(Number(percentify(numberOnDisplay)).valueOf().toPrecision(8));
                     break;
                 case "decimal":
-                    if (checkIfNumberHasDecimal(numberOnDisplay) === false){
+                    if (num2InputStart == true){
+                        let newNumberOnDisplay = "0.";
+                        updateCalcDisplayScreen(newNumberOnDisplay);
+                        result = newNumberOnDisplay;
+                        num2InputStart = false;
+                    }
+                    else if (checkIfNumberHasDecimal(numberOnDisplay) === false){
                         result = addDecimal(numberOnDisplay);
                         //updateCalcDisplayScreen(result);
                     } else {
