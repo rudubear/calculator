@@ -3,6 +3,10 @@
     box-sizing: border-box;
 }
 
+header {
+    color: rgb(255, 208, 0);
+}
+
 body {
     background-color:rgb(120, 37, 14);
     display: flex;
@@ -17,7 +21,9 @@ body {
     justify-content: space-around;
     height: 720px;
     width: 600px;  
-    box-sizing: content-box;  
+    box-sizing: content-box; 
+    border: 2px 2px black;
+    box-shadow: 2px 2px 4px; 
 }
 
 .calculatorDisplaySpace{
@@ -25,6 +31,8 @@ body {
     flex-basis: 100%;
     padding: 8px;
     margin: 8px;
+    
+    
 }
 
 #calcDisplayScreen {
@@ -37,6 +45,8 @@ body {
     text-shadow: 3px 3px 4px rgb(255, 136, 0);
     padding-left: 12px;
     padding-right: 12px;
+    border: 2px 2px grey;
+    box-shadow: 2px 2px 4px;
 }
 
 .calculatorButtonSpace {
